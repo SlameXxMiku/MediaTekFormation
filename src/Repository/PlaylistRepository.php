@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Repository;
-
+    
 use App\Entity\Playlist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,18 +11,20 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PlaylistRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Playlist::class);
-    }
 
-    public function add(Playlist $entity): void
+public function __construct(ManagerRegistry $registry)
+{
+    parent::__construct($registry, Playlist::class);
+}
+
+
+public function add(Playlist $entity): void
     {
         $this->getEntityManager()->persist($entity);
         $this->getEntityManager()->flush();
     }
 
-    public function remove(Playlist $entity): void
+public function remove(Playlist $entity): void
     {
         $this->getEntityManager()->remove($entity);
         $this->getEntityManager()->flush();
@@ -34,14 +36,15 @@ class PlaylistRepository extends ServiceEntityRepository
      * @param type $ordre
      * @return Playlist[]
      */
-    public function findAllOrderByName($ordre): array{
+public function findAllOrderByName($ordre): array
+    {
         return $this->createQueryBuilder('p')
                 ->leftjoin('p.formations', 'f')
                 ->groupBy('p.id')
                 ->orderBy('p.name', $ordre)
                 ->getQuery()
-                ->getResult();       
-    } 
+                ->getResult();
+    }
 	
     /**
      * Enregistrements dont un champ contient une valeur
@@ -51,30 +54,36 @@ class PlaylistRepository extends ServiceEntityRepository
      * @param type $table si $champ dans une autre table
      * @return Playlist[]
      */
-    public function findByContainValue($champ, $valeur, $table=""): array{
-        if($valeur==""){
-            return $this->findAllOrderByName('ASC');
-        }    
-        if($table==""){      
-            return $this->createQueryBuilder('p')
-                    ->leftjoin('p.formations', 'f')
-                    ->where('p.'.$champ.' LIKE :valeur')
-                    ->setParameter('valeur', '%'.$valeur.'%')
-                    ->groupBy('p.id')
-                    ->orderBy('p.name', 'ASC')
-                    ->getQuery()
-                    ->getResult();              
-        }else{   
-            return $this->createQueryBuilder('p')
-                    ->leftjoin('p.formations', 'f')
-                    ->leftjoin('f.categories', 'c')
-                    ->where('c.'.$champ.' LIKE :valeur')
-                    ->setParameter('valeur', '%'.$valeur.'%')
-                    ->groupBy('p.id')
-                    ->orderBy('p.name', 'ASC')
-                    ->getQuery()
-                    ->getResult();              
-        }           
-    }    
-    
+public function findByContainValue($champ, $valeur, $table = ""): array
+{
+    if ($valeur === "") {
+        return $this->findAllOrderByName('ASC');
+    }
+
+    $qb = $this->createQueryBuilder('p')
+               ->leftJoin('p.formations', 'f');
+
+    if ($table !== "") {
+        $qb->leftJoin('f.categories', 'c')
+           ->where('c.' . $champ . ' LIKE :valeur');
+    } else {
+        $qb->where('p.' . $champ . ' LIKE :valeur');
+    }
+
+    $qb->setParameter('valeur', '%' . $valeur . '%')
+       ->groupBy('p.id')
+       ->orderBy('p.name', 'ASC');
+
+    return $qb->getQuery()->getResult();
+}
+    public function findAllOrderByNbFormations(string $ordre): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.formations', 'f')
+            ->addSelect('COUNT(f) AS HIDDEN nbformations')
+            ->groupBy('p.id')
+            ->orderBy('nbformations', $ordre)
+            ->getQuery()
+            ->getResult();
+    }
 }
