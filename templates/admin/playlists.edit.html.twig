@@ -1,0 +1,25 @@
+{% extends "baseadmin.html.twig" %}
+
+{% block body %}
+    <h2 class="mt-3">Modifier la playlist : {{ playlist.name }}</h2>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    <h3 class="mt-4">Formations de cette playlist</h3>
+
+    {% if playlist.formations|length > 0 %}
+        <ul>
+            {% for formation in playlist.formations %}
+                <li>{{ formation.title }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune formation n'est rattachée à cette playlist.</p>
+    {% endif %}
+
+    <a href="{{ path('admin.playlists') }}" class="btn btn-link mt-3">
+        Retour à la liste
+    </a>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "baseadmin.html.twig" %}
+
+{% block body %}
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} mt-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <h2 class="mt-3">Catégories</h2>
+
+    <form method="POST" action="{{ path('admin.categories.ajout') }}" class="form-inline mt-3 mb-3">
+        <div class="form-group mr-2">
+            <label for="name" class="mr-2">Nouvelle catégorie :</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Ajouter</button>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom de la catégorie</th>
+                <th>Nb formations</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for categorie in categories %}
+            <tr>
+                <td>{{ categorie.name }}</td>
+                <td>{{ categorie.formations|length }}</td>
+                <td>
+                    <a href="{{ path('admin.categories.suppr', {id: categorie.id}) }}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Supprimer la catégorie {{ categorie.name }} ?');">
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="3">Aucune catégorie trouvée.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
