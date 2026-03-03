@@ -1,86 +1,130 @@
-# Mediatekformation
-## Présentation
-Ce site, développé avec Symfony 6.4, permet d'accéder aux vidéos d'auto-formation proposées par une chaîne de médiathèques et qui sont aussi accessibles sur YouTube.<br> 
-Actuellement, seule la partie front office a été développée. Elle contient les fonctionnalités globales suivantes :<br>
-![img1](https://github.com/user-attachments/assets/9c5c503b-738d-40cf-ba53-36ba4c0209e8)
-## Les différentes pages
-Voici les 5 pages correspondant aux différents cas d’utilisation.
-### Page 1 : l'accueil
-Cette page présente le fonctionnement du site et les 2 dernières vidéos mises en ligne.<br>
-La partie du haut contient une bannière (logo, nom et phrase présentant le but du site) et le menu permettant d'accéder aux 3 pages principales (Accueil, Formations, Playlists).<br>
-Le centre contient un texte de présentation avec, entre autres, les liens pour accéder aux 2 autres pages principales.<br>
-La partie basse contient les 2 dernières formations mises en ligne. Cliquer sur une image permet d'accéder à la page 3 de présentation de la formation.<br>
-Le bas de page contient un lien pour accéder à la page des CGU : ce lien est présent en bas de chaque page excepté la page des CGU.<br>
-![img2](https://github.com/user-attachments/assets/523b4233-3505-4b8c-9db0-5e7b72965bc6)
-### Page 2 : les formations
-Cette page présente les formations proposées en ligne (accessibles sur YouTube).<br>
-La partie haute est identique à la page d'accueil (bannière et menu).<br>
-La partie centrale contient un tableau composé de 5 colonnes :<br>
-•	La 1ère colonne ("formation") contient le titre de chaque formation.<br>
-•	La 2ème colonne ("playlist") contient le nom de la playlist dans laquelle chaque formation se trouve.<br>
-•	La 3ème colonne ("catégories") contient la ou les catégories concernées par chaque formation (langage…).<br>
-•	La 4ème colonne ("date") contient la date de parution de chaque formation.<br>
-•	LA 5ème contient la capture visible sur YouTube, pour chaque formation.<br>
-Au niveau des colonnes "formation", "playlist" et "date", 2 boutons permettent de trier les lignes en ordre croissant ("<") ou décroissant (">").<br>
-Au niveau des colonnes "formation" et "playlist", il est possible de filtrer les lignes en tapant un texte : seuls les lignes qui contiennent ce texte sont affichées. Si la zone est vide, le fait de cliquer sur "filtrer" permet de retrouver la liste complète.<br> 
-Au niveau de la catégorie, la sélection d'une catégorie dans le combo permet d'afficher uniquement les formations qui ont cette catégorie. Le fait de sélectionner la ligne vide du combo permet d'afficher à nouveau toutes les formations.<br>
-Par défaut la liste est triée sur la date par ordre décroissant (la formation la plus récente en premier).<br>
-Le fait de cliquer sur une miniature permet d'accéder à la troisième page contenant le détail de la formation.<br>
-![img3](https://github.com/user-attachments/assets/bc033cf9-41a5-4cad-a268-8abb400965c5)
-### Page 3 : détail d'une formation
-Cette page n'est pas accessible par le menu mais uniquement en cliquant sur une miniature dans la page "Formations" ou une image dans la page "Accueil".<br>
-La partie haute est identique à la page d'accueil (bannière et menu).<br>
-La partie centrale est séparée en 2 parties :<br>
-•	La partie gauche contient la vidéo qui peut être directement visible dans le site ou sur YouTube.<br>
-•	La partie droite contient la date de parution, le titre de la formation, le nom de la playlist, la liste des catégories et sa description détaillée.<br>
-![img4](https://github.com/user-attachments/assets/f41d05d8-5980-4dc4-9eb7-58d1c31b8a25)
-### Page 4 : les playlists
-Cette page présente les playlists.<br>
-La partie haute est identique à la page d'accueil (bannière et menu).<br>
-La partie centrale contient un tableau composé de 3 colonnes :<br>
-•	La 1ère colonne ("playlist") contient le nom de chaque playlist.<br>
-•	La 2ème colonne ("catégories") contient la ou les catégories concernées par chaque playlist (langage…).<br>
-•	La 3ème contient un bouton pour accéder à la page de présentation de la playlist.<br>
-Au niveau de la colonne "playlist", 2 boutons permettent de trier les lignes en ordre croissant ("<") ou décroissant (">"). Il est aussi possible de filtrer les lignes en tapant un texte : seuls les lignes qui contiennent ce texte sont affichées. Si la zone est vide, le fait de cliquer sur "filtrer" permet de retrouver la liste complète.<br> 
-Au niveau de la catégorie, la sélection d'une catégorie dans le combo permet d'afficher uniquement les playlists qui ont cette catégorie. Le fait de sélectionner la ligne vide du combo permet d'afficher à nouveau toutes les playlists.<br>
-Par défaut la liste est triée sur le nom de la playlist.<br>
-Cliquer sur le bouton "voir détail" d'une playlist permet d'accéder à la page 5 qui présente le détail de la playlist concernée.<br>
-![img5](https://github.com/user-attachments/assets/bbe8934f-8d4b-4da2-8216-60b96b726d8a)
-### Page 5 : détail d'une playlist
-Cette page n'est pas accessible par le menu mais uniquement en cliquant sur un bouton "voir détail" dans la page "Playlists".<br>
-La partie haute est identique à la page d'accueil (bannière et menu).<br>
-La partie centrale est séparée en 2 parties :<br>
-•	La partie gauche contient les informations de la playlist (titre, liste des catégories, description).<br>
-•	La partie droite contient la liste des formations contenues dans la playlist (miniature et titre) avec possibilité de cliquer sur une formation pour aller dans la page de la formation.<br>
-![img6](https://github.com/user-attachments/assets/f216a9e7-084a-4683-9b4e-cada5574a0e2)
-## La base de données
-La base de données exploitée par le site est au format MySQL.
-### Schéma conceptuel de données
-Voici le schéma correspondant à la BDD.<br>
-![img7](https://github.com/user-attachments/assets/f3eca694-bf96-4f6f-811e-9d11a7925e9e)
-<br>video_id contient le code YouTube de la vidéo, qui permet ensuite de lancer la vidéo à l'adresse suivante :<br>
-https://www.youtube.com/embed/<<<video_id>>>
-### Relations issues du schéma
-<code><strong>formation (id, published_at, title, video_id, description, playlist_id)</strong>
-id : clé primaire
-playlist_id : clé étrangère en ref. à id de playlist
-<strong>playlist (id, name, description)</strong>
-id : clé primaire
-<strong>categorie (id, name)</strong>
-id : clé primaire
-<strong>formation_categorie (id_formation, id_categorie)</strong>
-id_formation, id_categorie : clé primaire
-id_formation : clé étrangère en ref. à id de formation
-id_categorie : clé étrangère en ref. à id de categorie</code>
+# MediatekFormation — Back Office
 
-Remarques : 
-Les clés primaires des entités sont en auto-incrémentation.<br>
-Le chemin des images (des 2 tailles) n'est pas mémorisé dans la BDD car il peut être fabriqué de la façon suivante :<br>
-"https://i.ytimg.com/vi/" suivi de, soit "/default.jpg" (pour la miniature), soit "/hqdefault.jpg" (pour l'image plus grande de la page d'accueil).
-## Test de l'application en local
-- Vérifier que Composer, Git et Wamserver (ou équivalent) sont installés sur l'ordinateur.
-- Télécharger le code et le dézipper dans www de Wampserver (ou dossier équivalent) puis renommer le dossier en "mediatekformation".<br>
-- Ouvrir une fenêtre de commandes en mode admin, se positionner dans le dossier du projet et taper "composer install" pour reconstituer le dossier vendor.<br>
-- Dans phpMyAdmin, se connecter à MySQL en root sans mot de passe et créer la BDD 'mediatekformation'.<br>
-- Récupérer le fichier mediatekformation.sql en racine du projet et l'utiliser pour remplir la BDD (si vous voulez mettre un login/pwd d'accès, il faut créer un utilisateur, lui donner les droits sur la BDD et il faut le préciser dans le fichier ".env" en racine du projet).<br>
-- De préférence, ouvrir l'application dans un IDE professionnel. L'adresse pour la lancer est : http://localhost/mediatekformation/public/index.php<br>
+> Le dépôt d'origine est disponible ici : [MediatekFormation](https://github.com/CNED-SLAM/mediatekformation).<br>
+> Son readme contient la présentation complète de l'application d'origine (front office).
+
+---
+
+## Présentation
+
+Ce dépôt est un fork du projet MediatekFormation, développé avec Symfony 6.4.<br>
+Il complète l'application d'origine en apportant les éléments suivants :
+- Corrections du code existant (bonnes pratiques SonarLint)
+- Fonctionnalité de tri par nombre de formations sur la page des playlists
+- Un back office complet pour gérer le contenu de la base de données
+- Des tests unitaires, d'intégration et fonctionnels
+- Une documentation technique générée automatiquement
+
+---
+
+## Fonctionnalités ajoutées
+
+### Front office
+
+**Nombre de formations par playlist**<br>
+Le nombre de formations est désormais affiché dans la page des playlists ainsi que dans la page de détail d'une playlist.
+
+**Tri par nombre de formations**<br>
+Sur la page des playlists, deux boutons permettent de trier la liste par nombre de formations (ordre croissant ou décroissant).
+
+### Back office
+
+L'accès au back office est sécurisé par une page de connexion avec authentification.<br>
+Les identifiants ne sont pas communiqués ici ; ils sont fournis séparément dans la fiche rendue.
+
+**Gestion des formations**
+- Ajouter une nouvelle formation (titre, date de parution, identifiant vidéo YouTube, description, playlist, catégories)
+- Modifier une formation existante
+- Supprimer une formation
+
+**Gestion des playlists**
+- Ajouter une nouvelle playlist (nom, description, catégories)
+- Modifier une playlist existante
+- Supprimer une playlist
+
+**Gestion des catégories**
+- Ajouter une nouvelle catégorie
+- Supprimer une catégorie
+
+---
+
+## Tests réalisés
+
+- **Test unitaire** : méthode retournant la date au format string
+- **Tests d'intégration** : règles de validation
+- **Tests d'intégration** : Repository
+- **Tests fonctionnels** : accès à l'accueil, tris, filtres
+- **Tests de compatibilité** : Chrome et Firefox
+
+---
+
+## Documentation technique
+
+La documentation technique a été générée automatiquement pour l'ensemble de l'application (hors code généré par Symfony).<br>
+Elle est disponible dans le dossier `docs/` à la racine du projet.
+
+---
+
+## Installation en local
+
+### Prérequis
+- PHP 8.1 ou supérieur
+- Composer
+- Git
+- WampServer (ou équivalent)
+- MySQL
+
+### Étapes
+
+**1. Cloner ou télécharger le dépôt**<br>
+Télécharger le code et le dézipper dans le dossier `www` de WampServer, puis renommer le dossier en `mediatekformation`.
+
+**2. Installer les dépendances**<br>
+Ouvrir une fenêtre de commandes en mode administrateur, se positionner dans le dossier du projet et exécuter :
+```bash
+composer install
+```
+
+**3. Configurer la base de données**<br>
+Dans phpMyAdmin, se connecter à MySQL en root sans mot de passe et créer la base de données `mediatekformation`.<br>
+Récupérer le fichier `mediatekformation.sql` à la racine du projet et l'importer pour remplir la base de données.<br>
+Si un login/mot de passe est nécessaire, créer un utilisateur, lui donner les droits sur la BDD et renseigner le fichier `.env` :
+```
+DATABASE_URL="mysql://LOGIN:MOT_DE_PASSE@127.0.0.1:3306/mediatekformation"
+```
+
+**4. Lancer l'application**<br>
+L'adresse pour accéder au front office est :
+```
+http://localhost/mediatekformation/public/index.php
+```
+
+Pour accéder au back office :
+```
+http://localhost/mediatekformation/public/index.php/login
+```
+
+> Les identifiants de connexion au back office sont fournis séparément dans la fiche rendue.
+
+---
+
+## Lancer les tests
+
+```bash
+php bin/phpunit
+```
+
+Pour lancer un type de test spécifique :
+```bash
+# Test unitaire
+php bin/phpunit tests/Entity/
+
+# Tests de validation
+php bin/phpunit tests/Validations/
+
+# Tests des Repository
+php bin/phpunit tests/Repositories/
+
+# Tests fonctionnels
+php bin/phpunit tests/Functional/
+```
