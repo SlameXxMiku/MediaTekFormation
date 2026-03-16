@@ -1,11 +1,11 @@
 {
     frankenphp {
-        php_ini extension=pdo_mysql
-        php_ini extension=mysqli
+        php_ini "extension" "pdo_mysql"
+        php_ini "extension" "mysqli"
     }
 }
 
-:80 {
+:8080 {
     root * /app/public
     php_server
 }
