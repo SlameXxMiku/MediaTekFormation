@@ -14,7 +14,11 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN composer run-script post-install-cmd --no-interaction || true
 
 RUN php bin/console cache:clear --env=prod || true
+RUN php bin/console cache:warmup --env=prod || true
 RUN php bin/console asset-map:compile --env=prod || true
+
+# Rendre le dossier var writable au runtime
+RUN chmod -R 777 /app/var
 
 RUN printf '{\n\tauto_https off\n\tadmin off\n}\n:{$PORT} {\n\troot * /app/public\n\tphp_server\n}\n' > /etc/caddy/Caddyfile
 
