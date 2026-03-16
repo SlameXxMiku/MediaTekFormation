@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:latest-php8.3
+FROM dunglas/frankenphp:latest-php8.4
 
 RUN install-php-extensions pdo_mysql intl opcache
 
