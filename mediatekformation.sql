@@ -1,21 +1,711 @@
-FROM dunglas/frankenphp:latest-php8.4
+-- phpMyAdmin SQL Dump
+-- Modified for Railway (database: railway)
 
-RUN install-php-extensions pdo_mysql intl opcache
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
-COPY . /app
-WORKDIR /app
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+-- --------------------------------------------------------
 
-ENV DATABASE_URL="mysql://fake:fake@localhost:3306/fake"
-ENV APP_ENV=prod
+--
+-- Structure de la table `categorie`
+--
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-RUN composer run-script post-install-cmd --no-interaction || true
+DROP TABLE IF EXISTS `categorie`;
+CREATE TABLE IF NOT EXISTS `categorie` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-RUN php bin/console cache:clear --env=prod || true
-RUN php bin/console asset-map:compile --env=prod || true
+--
+-- Déchargement des données de la table `categorie`
+--
 
-RUN printf '{\n\tauto_https off\n\tadmin off\n}\n:{$PORT} {\n\troot * /app/public\n\tphp_server\n}\n' > /etc/caddy/Caddyfile
+INSERT INTO `categorie` (`id`, `name`) VALUES
+(1, 'Java'),
+(2, 'UML'),
+(3, 'C#'),
+(4, 'Python'),
+(5, 'MCD'),
+(6, 'Android'),
+(7, 'POO'),
+(8, 'SQL'),
+(9, 'Cours');
 
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `doctrine_migration_versions`
+--
+
+DROP TABLE IF EXISTS `doctrine_migration_versions`;
+CREATE TABLE IF NOT EXISTS `doctrine_migration_versions` (
+  `version` varchar(191) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `executed_at` datetime DEFAULT NULL,
+  `execution_time` int DEFAULT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Déchargement des données de la table `doctrine_migration_versions`
+--
+
+INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
+('DoctrineMigrations\\Version20240513134621', '2024-05-13 13:47:49', 1145);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formation`
+--
+
+DROP TABLE IF EXISTS `formation`;
+CREATE TABLE IF NOT EXISTS `formation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `playlist_id` int DEFAULT NULL,
+  `published_at` datetime DEFAULT NULL,
+  `title` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `video_id` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IDX_404021BF6BBD148` (`playlist_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `formation`
+--
+
+INSERT INTO `formation` (`id`, `playlist_id`, `published_at`, `title`, `description`, `video_id`) VALUES
+(1, 1, '2021-01-04 17:00:12', 'Eclipse n°8 : Déploiement', 'Exécution de l\'application en dehors de l\'IDE, en invite de commande.\nCréation d\'un ficher jar pour le déploiement de l\'application.\n00:20 : exécuter l\'application à partir d\'un invite de commandes\n04:41 : créer un fichier jar auto exécutable\n06:42 : exécuter un fichier jar directement\n07:09 : exécuter un fichier jar dans l\'invite de commande pour avoir les retours console', 'Z4yTTXka958'),
+(2, 1, '2021-01-02 17:00:01', 'Eclipse n°7 : Tests unitaires', 'Intégration de JUnit dans l\'application et création de tests unitaires.\n00:07 : rappel sur le principe du test unitaire\n01:01 : intégrer JUnit au projet (une seule fois)\n01:52 : créer une classe de test\n03:49 : créer une méthode de test\n08:35 : lancer le test\n09:11 : créer une autre méthode de test pour tester la même méthode\n11:02 : relancer le test', '-nw42Xq6cYE'),
+(3, 1, '2020-12-30 17:00:07', 'Eclipse n°6 : Documentation technique', 'Intégration des commentaires normalisés et génération automatique de la documentation technique\n00:08 : insérer des commentaires normalisés\n02:14 : générer documentation technique\n04:35 : repérer et corriger les erreurs et warnings\n06:58 : afficher la documentation technique', 'PrK_P3TKc00'),
+(4, 1, '2020-12-29 17:00:00', 'Eclipse n°5 : Refactoring', 'Utilisation des outils de refactoring et de génération automatique de code.\n01:00 : refaire automatiquement les indentations\n01:25 : changer un nom (classe, méhode, propriété)\n04:04 : extraire une méthode\n06:19 : modifier la signature d\'une méthode\n09:23 : générer du code (constructeur, getter/setter)\n12:34 : encapsuler une propriété\n15:30 : extraire une interface', '1p_mKDDSMnQ'),
+(5, 1, '2020-11-09 17:00:25', 'Eclipse n°4 : WindowBuilder', 'Intégration de l\'outil WindowBuilder dans Eclipse pour pouvoir construire de façon visuelle, une interface graphique.\n00:00 : téléchargement et configuration de WindowBuilder\n03:00 : création d\'une JFrame avec WindowBuilder\n05:56 : construction de l\'interface graphique\n\n10:43 : gestion des événements\n16:15 : gestion des ressources graphiques (images...)', 'pQfbr3hpw04'),
+(6, 1, '2020-11-07 17:00:09', 'Eclipse n°3 : GitHub et Eclipse', 'Créer un compte sur le site GitHub.\nLier ce compte à un projet sous Eclipse.\nUtiliser ce lien pour enregistrer à distance (commit and push), annuler un commit (revert commit) ou récupérer un projet distant (clone).', 'mlN7VvZkXtM'),
+(7, 1, '2020-11-05 17:00:02', 'Eclipse n°2 : rétroconception avec ObjectAid', 'Utilisation de l\'outil ObjectAid sous Eclipse pour faire de la rétroconception sur les classes.', '9UBtVxHsnNk'),
+(8, 1, '2020-11-03 17:08:22', 'Eclipse n°1 : installation de l\'IDE', 'Première vidéo d\'une série sur Eclipse et le développement Java.\nInstallation du JDK et d\'Eclipse 2020-09.', 'EBzTRPgbqdc'),
+(9, 24, '2020-11-01 17:00:13', 'UML : Diagramme de paquetages', 'Présentation des éléments qui constituent un diagramme de paquetages.', 'Wkbwzfybk1E'),
+(10, 24, '2020-10-30 17:00:09', 'UML : Diagramme de classes', 'Présentation des éléments qui constituent un diagramme de classes', 'odKgwPftibM'),
+(12, 24, '2020-09-26 16:30:01', 'UML : Diagramme d\'activité', 'Présentation du tableau descriptif d\'un cas d\'utilisation et la représentation graphique de son scénario avec un diagramme d\'activité.', 'D4tnhIpYYSM'),
+(13, 24, '2020-09-24 16:30:01', 'UML : Diagramme de cas d\'utilisation', 'Présentation du diagramme de cas d\'utilisation à travers la construction d\'un exemple.', 'LDTDlXMV1xY'),
+(14, 2, '2020-08-07 16:15:01', 'C# : ListBox en couleur', 'Comment mettre les lignes d\'une ListBox en couleur, en fonction de certains critères.', 'Ce3nT4g5SKk'),
+(15, 2, '2020-08-04 16:15:01', 'C# : Documentation technique', 'Comment générer automatiquement une documentation technique sous Visual Studio.', 'GH5FgAUanhw'),
+(16, 2, '2020-08-02 16:26:13', 'C# : Lier List et ListBox', 'Comment lier une List à une ListBox, afin de pouvoir récupérer le bon objet dans la List, lors d\'une sélection d\'une ligne dans la ListBox.', '-Zt1vbdUdnQ'),
+(17, 2, '2020-07-31 15:55:54', 'C# : Tri avec ToString et CompareTo', 'Comment gérer le tri sur le titre, dans la liste, alors que la première information affichée est l\'année de sortie.', 'LwkGsXCUdeg'),
+(18, 2, '2020-07-29 16:00:07', 'C# : Sérialisation d\'objets', 'Enregistrement de la liste d\'objets dans un fichier binaire, pour pouvoir récupérer les informations après avoir fermé et réouvert l\'application.', 'OL_qY2ennMo'),
+(19, 2, '2020-07-27 16:00:01', 'C# : Classes et héritage', 'Utilisation de classes métiers pour mémoriser des informations et les utiliser pour remplir une ListBox.', '0VDbDYREVcU'),
+(20, 2, '2020-07-25 16:00:17', 'C# : lier Github à Visual Studio', 'Pour un travail professionnel sur des projets en commun, il est possible de configurer Visual Studio pour qu\'il communique avec GitHub.', 'p4Y0WvpEGgU'),
+(21, 2, '2020-07-23 16:00:01', 'C# : création d\'objets graphiques dans le code', 'Allons plus loin dans le code des applications de bureau en C#.', '3RayCDFo_pI'),
+(22, 2, '2020-07-21 16:00:25', 'C# : utilisation des objets graphiques', 'Pour les débutants en application de bureau sous C#.', 'wkzXQGQiZHA'),
+(23, 2, '2020-07-19 16:04:14', 'C# : événementiel contre séquentiel', 'Différence d\'approche entre une application séquentielle en mode console et une application événementielle en mode graphique.', 'euZqLEU2F_E'),
+(24, 2, '2020-07-13 17:48:29', 'C# : présentation des objets graphiques', 'Pour les débutants en application de bureau sous C#.', 'xBmwCrtqazU'),
+(25, 3, '2019-12-10 17:00:04', 'Python n°18 : Décorateur singleton', 'Nouvel exemple de décorateur qui cette fois, décore une classe et non une fonction.', 'BLPIdhAHQmQ'),
+(26, 3, '2019-12-02 10:46:38', 'Python n°17 : Décorateur exemple simple', 'Décorateur pour calculer le temps d\'exécution de fonctions.', '24_M88Ebyp0'),
+(27, 3, '2019-11-22 11:03:07', 'Python n°16 : Décorateurs', 'Présentation théorique de la notion de décorateurs.', '0bMI9Z1XgIE'),
+(28, 3, '2019-11-20 15:18:21', 'Python n°15 : Paramètres des fonctions', 'Présentation des différentes possibilités de paramètres d\'une fonction.', 'EsXg1o3u-g4'),
+(29, 3, '2019-10-28 13:21:15', 'Python n°14 : Héritage', 'Notion d\'héritage, appel du constructeur de la classe mère pour valoriser les propriétés de la classe mère, test du type d\'un objet.', 'hWtHkP9uwR8'),
+(30, 3, '2019-10-25 13:56:29', 'Python n°13 : Encapsulation', 'Technique pour gérer les getter et setter sous Python pour éviter l\'accès direct aux propriétés.', 'pLnMkC79i4U'),
+(31, 3, '2019-10-24 10:13:43', 'Python n°12 : Classe et liste d\'objets', 'Initiation à la programmation objet sous Python.', 'KHsEAuZdS5w'),
+(32, 3, '2019-10-22 11:10:36', 'Python n°11 : dictionnaire et IDE PyCharm', 'Découverte du dictionnaire avec un exercice qui mémorise des villes et la population pour chaque ville.', 'P1iFvYY82i0'),
+(33, 3, '2019-10-18 09:38:34', 'Python n°10 : gestion des exceptions et utilisation de l\'aide', 'Le programme permet de calculer l\'année de naissance par rapport à un âge en évitant les erreurs de saisie.', 'hYyFDoFHRWY'),
+(34, 3, '2019-10-16 09:47:45', 'Python n°9 : Listes', 'Recherche des 50 premiers nombres premiers avec optimisation de la recherche.', '1WtVyo6av7s'),
+(35, 3, '2019-10-15 12:14:22', 'Python n°8 : Fonctions et bibliothèques', 'A travers un exercice d\'opération binaire, découverte de la création des fonctions et des bibliothèques.', 'Hnz3d313f7M'),
+(36, 3, '2019-10-14 10:09:06', 'Python n°7 : Conversion binaire et menu', 'Le programme permet de convertir un nombre binaire en entier et vice versa.', '_OdRF06GuwU'),
+(37, 3, '2019-10-08 10:09:41', 'Python n°6 : Nombre premier, test et booléen', 'Ecrire un programme qui permet de vérifier si un nombre est premier ou non.', 'NiFBLZqy8PU'),
+(38, 3, '2019-10-07 08:42:19', 'Python n°5 : Produit de valeurs', 'Reprise de l\'exercice précédent mais cette fois, en le transformant en produit.', 'qytbwk4zAtk'),
+(39, 3, '2019-10-06 10:01:30', 'Python n°4 : bibliothèque math', 'Calcul de la somme des n premières puissances de 2.', '2U63_NtOP-M'),
+(40, 3, '2019-10-04 08:47:29', 'Python n°3 : Somme entre 2 bornes', 'Calculer la somme entre 2 bornes.', 'GsCWIUFE8CE'),
+(41, 3, '2019-10-03 08:35:56', 'Python n°2 : boucle for', 'Reprise de l\'exercice 1 en ajoutant le test de saisie et en utilisant la boucle for.', 'elrR4GUpKEo'),
+(42, 3, '2019-10-02 09:19:32', 'Python n°1 : boucle simple, saisie, affichage', 'Découverte des commentaires, de la saisie, de l\'affichage et de la boucle universelle (while).', '4BFWagDB5aE'),
+(43, 3, '2019-09-30 14:55:31', 'Python n°0 : installation de Python', 'Cette vidéo permet juste de montrer comment installer Python et faire un premier test de programme.', 'ilx0fJ72Re4'),
+(44, 8, '2019-09-29 13:06:14', 'Android Studio (complément n°13) : Permissions', 'Permettre de gérer les permissions directement dans l\'application.', 'mkI2yKiTS-4'),
+(45, 8, '2019-09-17 13:49:02', 'Android Studio (complément n°12) : Positionner texte sur photo', 'A partir d\'une application Android, positionner un texte sur une image et l\'enregistrer dans l\'image.', '3IyrvQJCxVo'),
+(46, 4, '2019-05-22 15:41:47', 'Sujet E5 SLAM 2019 : cas RESTILOC mission4 (calcul et comparatif)', 'Correction commentée de la mission 4 du sujet SLAM RESTILOC tombé en métropole en mai 2019.', 'mBeZLsIwzkQ'),
+(47, 4, '2019-05-22 11:00:36', 'Sujet E5 SLAM 2019 : cas RESTILOC mission3 (SQL et Android)', 'Correction commentée de la mission 3 du sujet SLAM RESTILOC tombé en métropole en mai 2019.', 'VCFkJRfVyYo'),
+(48, 4, '2019-05-21 10:31:56', 'Sujet E5 SLAM 2019 : cas RESTILOC mission2 (programmation objet)', 'Correction commentée de la mission 2 du sujet SLAM RESTILOC tombé en métropole en mai 2019.', 'pc6A6E7Lm0I'),
+(49, 4, '2019-05-21 08:57:28', 'Sujet E5 SLAM 2019 : cas RESTILOC mission1 (conception de données)', 'Correction commentée de la mission 1 du sujet SLAM RESTILOC tombé en métropole en mai 2019.', 'sDXBL5Ohdok'),
+(50, 5, '2019-05-07 11:18:22', 'Sujet E5 SLAM 2018 : cas LOCALUX mission3 (SI7)', 'Correction commentée de la mission 3 du sujet SLAM LOCALUX tombé à Noumea en novembre 2018.', 'X9_fMYdzDog'),
+(51, 5, '2019-05-06 11:56:38', 'Sujet E5 SLAM 2018 : cas LOCALUX mission2 (objet)', 'Correction commentée de la mission 2 du sujet SLAM LOCALUX tombé à Noumea en novembre 2018.', 'ihegtV45yTg'),
+(52, 5, '2019-05-05 15:40:23', 'Sujet E5 SLAM 2018 : cas LOCALUX mission1 (SQL et conception)', 'Correction commentée de la mission 1 du sujet SLAM LOCALUX tombé à Noumea en novembre 2018.', 'gRxIv2O3xVQ'),
+(53, 6, '2019-05-03 11:00:53', 'Sujet E5 SLAM 2018 : cas WEBCAISSE mission4 (SI7)', 'Correction commentée de la mission 4 du sujet SLAM 2018 WEBCAISSE tombé en métropole en juin 2018.', 'UdW4xP0aHsI'),
+(54, 6, '2019-05-02 10:54:44', 'Sujet E5 SLAM 2018 : cas WEBCAISSE mission3 (objet)', 'Correction commentée de la mission 3 du sujet SLAM 2018 WEBCAISSE tombé en métropole en juin 2018.', 'NtkfDd8OdZs'),
+(55, 6, '2019-05-01 14:35:40', 'Sujet E5 SLAM 2018 : cas WEBCAISSE mission2 (sql et tests unitaires)', 'Correction commentée de la mission 2 du sujet SLAM 2018 WEBCAISSE tombé en métropole en juin 2018.', 'Mgmim27uOHA'),
+(56, 6, '2019-04-30 15:32:23', 'Sujet E5 SLAM 2018 : cas WEBCAISSE mission1 (conception)', 'Correction commentée de la mission 1 du sujet SLAM 2018 WEBCAISSE tombé en métropole en juin 2018.', '4WnrIKhVYig'),
+(57, 7, '2019-03-14 11:56:43', 'MCD exercice 18 : sujet 2006 (cas Credauto)', 'Sujet officiel de l\'ancien BTS Informatique.', 'EH2vqOPQTkI'),
+(58, 7, '2019-03-08 12:33:37', 'MCD exercice 17 : sujet 2007 (cas Synapsinfo)', 'Sujet officiel de l\'ancien BTS Informatique.', 'TWryppItdCo'),
+(59, 7, '2019-02-28 11:02:21', 'MCD exercice 16 : sujet 2008 (cas CAPDC)', 'Sujet officiel de l\'ancien BTS Informatique.', '9wws2L6bx4E'),
+(60, 7, '2019-02-24 18:02:05', 'MCD exercice 15 : sujet 2009 (cas Ergosum)', 'Sujet officiel de l\'ancien BTS Informatique.', 'a8s6Mrm6qls'),
+(61, 7, '2019-02-21 10:10:35', 'MCD exercice 14 : sujet 2009 (cas SEG)', 'Sujet officiel de l\'ancien BTS Informatique.', 'ZDCDeLRh6N8'),
+(62, 7, '2019-02-17 13:49:32', 'MCD exercice 13 : sujet 2010 (cas Noixcoop)', 'Sujet officiel de l\'ancien BTS Informatique.', 'IFo3phNo9ak'),
+(63, 7, '2019-02-14 10:14:59', 'MCD exercice 12 : sujet 2008 (cas Thali)', 'Sujet officiel de l\'ancien BTS Informatique.', 'nLEJY37gAw0'),
+(64, 7, '2019-02-07 10:44:44', 'MCD exercice 11 : sujet 2000 (cas Triathlète)', 'Sujet officiel de l\'ancien BTS Informatique.', '62UfQRSUMpk'),
+(65, 7, '2019-01-31 11:26:40', 'MCD exercice 10 : sujet 2005 (cas Ment)', 'Sujet officiel de l\'ancien BTS Informatique.', 'Bzml58Oe8PQ'),
+(66, 7, '2019-01-25 15:45:21', 'MCD exercice 9 : Double DF, lien relatif, association porteuse', 'Exercice plus long, avec annexes et présentant plusieurs difficultés.', '7iw08ykcOzw'),
+(67, 7, '2019-01-23 15:22:40', 'MCD exercice 8 : association ternaire', 'Exercice présentant 2 difficultés : repérage des informations à modéliser et association ternaire.', 'Y0Sp50n9OIg'),
+(68, 7, '2019-01-21 09:06:41', 'MCD exercice 7 : associations porteuses', 'Exercice un peu plus long, reprenant la notion de lien relatif, et présentant des associations porteuses.', '-vjZQpG16EY'),
+(69, 7, '2019-01-17 09:37:33', 'MCD exercice 6 : héritage', 'Comprendre l\'héritage.', 'dnZGdW4SBxw'),
+(70, 7, '2019-01-15 10:02:13', 'MCD exercice 5 : double DF entre entités et association réflexive', 'Comprendre la double DF entre entités et l\'association réflexive.', '_Bs93E0hhJc'),
+(71, 7, '2019-01-13 14:11:31', 'MCD exercice 4 : lien relatif', 'Comprendre la notion de lien relatif.', 'a0ReDXuQNLs'),
+(72, 7, '2019-01-11 16:02:32', 'MCD exercice 3 : MCD simple entités/DF/Association', 'Construire un MCD simple à partir d\'un sujet.', 'QjUI5bc_DgI'),
+(73, 7, '2019-01-09 10:19:07', 'MCD exercice 2 : MCD à partir de relations avec héritage', 'Construire un MCD à partir de relations avec héritage.', 'P5c3GOiFsr8'),
+(74, 7, '2019-01-07 15:48:07', 'MCD exercice 1 : MCD à partir de relations', 'Construire un MCD à partir de relations.', 'zhNNkDf9SrE'),
+(75, 8, '2018-12-18 15:47:11', 'Android Studio (complément n°11) : Transformer une image en texte', 'Cette vidéo montre comment transformer une image en texte et vice-versa.', '7Xm8GROWpX0'),
+(76, 25, '2018-11-18 18:29:53', 'Cours Merise/2 extensions', 'Présentation des extensions de Merise au niveau du MCD.', 'smTFM4GCEgc'),
+(77, 27, '2018-11-13 16:36:52', 'Cours Programmation Objet', 'Présentation des notions fondamentales de la programmation objet.', 'fKPK2VhsA4o'),
+(78, 26, '2018-11-02 18:21:55', 'Cours Modèle Relationnel et MCD', 'Présentation des règles du Modèle Relationnel pour créer une base de données optimisée.', 'VFHVNA8xgK0'),
+(79, 8, '2018-10-18 09:50:41', 'Android Studio (complément n°10) : Ajout icone dans menu', 'A partir d\'une application Android, ajouter des icônes utilisables par exemple dans les menus drawer.', 'VDGScSfKP_4'),
+(80, 8, '2018-10-10 19:33:05', 'Android Studio (complément n°9) : Ajout texte sur photo', 'A partir d\'une application Android, ajouter du texte sur une photo.', 'kanbIK-Jf3A'),
+(81, 8, '2018-10-04 10:35:09', 'Android Studio (complément n°8) : Enregistrer une photo', 'A partir d\'une application Android, enregistrer une photo dans la galerie.', 'YCnHHrR1luA'),
+(82, 8, '2018-09-16 09:48:25', 'Android Studio (complément n°7) : Prendre une photo', 'A partir d\'une application Android, accéder à l\'appareil photo pour prendre une photo.', '8890GpBwn9w'),
+(83, 8, '2018-09-12 20:00:08', 'Android Studio (complément n°6) : Redimensionner des photos', 'A partir d\'une application Android, redimensionner une photo proportionnellement.', 'ChqpJJKcaZU'),
+(84, 8, '2018-09-10 19:48:15', 'Android Studio (complément n°5) : Récupérer les photos du mobile', 'A partir d\'une application Android, accéder aux photos enregistrées dans le mobile et les afficher.', 'M9JUdmx5OW4'),
+(85, 8, '2018-08-17 07:19:08', 'Android Studio (complément n°4) : Envoyer un SMS', 'Coder l\'envoi d\'un SMS vers n\'importe quel smartphone, à partir d\'une application Android.', 'UNBTFdbKymU'),
+(86, 8, '2018-08-06 21:43:36', 'Android Studio (complément n°3) : Activity dépendante', 'Apprendre à créer des activity dépendantes.', '2n3bGqiaWMs'),
+(88, 8, '2018-07-26 19:10:11', 'Android Studio (complément n°2) : Récupérer les contacts du mobile', 'Apprendre à récupérer les contacts présents dans le mobile.', '4lT0pnyzkSA'),
+(89, 8, '2018-07-09 19:56:31', 'Android Studio (complément n°1) : Navigation Drawer et Fragment', 'Apprendre à créer une navigation type drawer et y intégrer des fragments.', 'rUnuYTjaBoU'),
+(90, 9, '2018-05-13 20:52:36', 'Sujet E5 SLAM 2017 : cas DANE mission4 (et quelques annonces)', 'Correction commentée de la mission 4 du sujet SLAM 2017 DANE.', 'gmZYXP3hPts'),
+(91, 9, '2018-05-11 16:58:14', 'Sujet E5 SLAM 2017 : cas DANE mission3', 'Correction commentée de la mission 3 du sujet SLAM 2017 DANE.', 'cZ1WR3f39xY'),
+(92, 9, '2018-05-11 09:20:20', 'Sujet E5 SLAM 2017 : cas DANE mission2', 'Correction commentée de la mission 2 du sujet SLAM 2017 DANE.', 'OOaMlhFca6o'),
+(93, 9, '2018-05-10 10:09:43', 'Sujet E5 SLAM 2017 : cas DANE mission1', 'Correction commentée de la mission 1 du sujet SLAM 2017 DANE.', '4mRyckm5kyI'),
+(94, 10, '2018-05-06 16:14:46', 'Sujet E5 SLAM 2017 : cas AHM-23 mission4', 'Correction commentée de la mission 4 du sujet SLAM 2017 AHM-23.', 'GfmxfueZcAI'),
+(95, 10, '2018-05-04 10:21:43', 'Sujet E5 SLAM 2017 : cas AHM-23 mission3', 'Correction commentée de la mission 3 du sujet SLAM 2017 AHM-23.', 'mZ1lNDBCiWw'),
+(96, 10, '2018-05-03 09:27:14', 'Sujet E5 SLAM 2017 : cas AHM-23 mission2', 'Correction commentée de la mission 2 du sujet SLAM 2017 AHM-23.', 'vkRTECTijZo'),
+(97, 10, '2018-05-02 15:37:16', 'Sujet E5 SLAM 2017 : cas AHM-23 mission1', 'Correction commentée de la mission 1 du sujet SLAM 2017 AHM-23.', '5cGFejz7gYQ'),
+(98, 11, '2018-02-14 14:33:08', 'TP Android n°18 : liste adapter interactive (4)', 'Quatrième étape : événement sur le reste de la ligne dans la liste.', 'HWL3yy3ZtNE'),
+(99, 11, '2018-02-13 16:47:33', 'TP Android n°17 : liste adapter interactive (3)', 'Troisième étape : tri d\'une liste, chargement à temps des profils du serveur.', 'oojJR_x04vI'),
+(100, 11, '2018-02-12 16:57:08', 'TP Android n°16 : liste adapter interactive (2)', 'Deuxième étape, Création et affichage de la liste adapter.', 'rpaZQhxbbKE'),
+(101, 11, '2018-02-11 14:19:58', 'TP Android n°15 : liste adapter interactive (1)', 'Première étape, récupération de tous les profils de la base MySQL dans l\'application Android.', 'QOmfFuAgnFY'),
+(102, 11, '2018-02-07 17:39:21', 'TP Android n°14 : plusieurs interfaces', 'Montrer comment créer plusieurs interfaces et comment passer d\'une interface à une autre.', '0LedL1ufiAs'),
+(103, 11, '2018-02-06 10:30:31', 'TP Android n°13 : formatage de la date', 'Montrer comment transformer une chaîne en date et vice versa.', 'NwvHF4BcMck'),
+(104, 11, '2018-02-04 18:03:43', 'TP Android n°12 : base de données distante MySQL (4)', 'Récupération du dernier profil distant dans le thread et affichage des informations dans l\'interface.', 'uNP706aKIRs'),
+(105, 11, '2018-02-02 13:30:29', 'TP Android n°11 : base de données distante MySQL (3)', 'Création la classe AccesDistant qui est en lien avec AccesHTTP pour communiquer avec le serveur distant.', '8Kyq69u9iqU');
+INSERT INTO `formation` (`id`, `playlist_id`, `published_at`, `title`, `description`, `video_id`) VALUES
+(106, 11, '2018-02-01 12:18:38', 'TP Android n°10 : base de données distante MySQL (2)', 'Faire les bons paramétrages et créer les classes outils nécessaires pour l\'accès au serveur distant.', 'n5AeP-fqT30'),
+(107, 11, '2018-01-31 14:20:06', 'TP Android n°9 : base de données distante MySQL (1)', 'Installer WAMP, créer une base de données MySQL, créer 2 pages php.', 'PKd8CEXXyLk'),
+(108, 11, '2018-01-28 14:39:00', 'TP Android n°8 : base de données locale SQLite', 'Découvrir le fonctionnement d\'une base de données au format SQLite.', 'vRaR3yLnHig'),
+(109, 11, '2018-01-25 17:47:06', 'TP Android n°7 : persistance par sérialisation', 'Enregistrer le profil par sérialisation dans un fichier binaire.', 'pLGSguzM9jU'),
+(110, 11, '2018-01-23 14:54:24', 'TP Android n°6 : code de la vue', 'Coder la classe de la partie Vue du MVC.', '8lO4wYm6Jos'),
+(111, 11, '2018-01-21 12:54:18', 'TP Android n°5 : code du controleur et JavaDoc', 'Coder la classe de la partie Controleur du MVC et création de la documentation technique.', '32Ljj4epj8k'),
+(112, 11, '2018-01-18 14:12:32', 'TP Android n°4 : code du modele et tests unitaires', 'Coder la classe de la partie Modele du MVC et création de tests unitaires.', '-3PEXYo7gKM'),
+(113, 11, '2018-01-16 19:51:19', 'TP Android n°3 : construction de l\'interface', 'Montrer le but de l\'application et construire la 1e interface.', 'nd0hZafw1sM'),
+(114, 11, '2018-01-14 15:17:56', 'TP Android n°2 : création d\'une application', 'Créer une nouvelle application, comprendre la structure d\'une application Android.', 'xzLxUu2xO7s'),
+(115, 11, '2018-01-12 11:17:51', 'TP Android n°1 : installation et configuration d\'Android Studio', 'Installer et configurer l\'IDE Android Studio.', 'M6pi6jXpRrs'),
+(116, 12, '2017-11-30 11:19:25', 'POO TP Java n°6 : polymorphisme', 'Gérer la liste (ajout, suppression) et utiliser le polymorphisme.', 'tnp0dEUYORA'),
+(117, 12, '2017-11-29 10:42:25', 'POO TP Java n°5 : événements et contrôleur', 'Ajouter les événements et compléter le contrôleur qui gère tout.', '8at4NpebW6c'),
+(118, 12, '2017-11-27 10:25:27', 'POO TP Java n°4 : démarrage sur le contrôleur, contruction du modèle', 'Montrer comment faire démarrer l\'application sur le contrôleur, et construction du modèle.', 'Ul4INk7LWS4'),
+(119, 12, '2017-11-26 14:46:32', 'POO TP Java n°3 : interface graphique', 'Montrer comment créer une interface graphique avec WindowBuilder.', 'MN7hxuCLrW0'),
+(120, 12, '2017-11-24 13:11:40', 'POO TP Java n°2 : MVC', 'Présenter le but de l\'application et la structure MVC.', 'hblV686hGV0'),
+(121, 12, '2017-11-23 13:18:07', 'POO TP Java n°1 : configuration d\'Eclipse', 'Télécharger, installer et configurer l\'IDE Eclipse Neon.', 'mwTvM_hKlDI'),
+(122, 13, '2017-11-19 13:43:18', 'Bases de la programmation n°74 - POO : collections', 'Comprendre le fonctionnement des collections.', 'JuVShBG2bf0'),
+(123, 13, '2017-11-16 16:23:18', 'Bases de la programmation n°73 - POO : polymorphisme et abstraction', 'Comprendre le polymorphisme et la notion d\'abstraction.', 'oCGvk4DUM8I'),
+(124, 13, '2017-11-15 10:26:39', 'Bases de la programmation n°72 - POO : héritage', 'Présentation de la notion d\'héritage.', 'FgqWq8lrfBI'),
+(125, 13, '2017-11-14 09:19:20', 'Bases de la programmation n°71 - POO : petit qcm', 'Petit QCM de contrôle de connaissances sur les premières notions de POO.', 'dnw6_GOe7us'),
+(126, 13, '2017-11-13 10:48:45', 'Bases de la programmation n°70 - POO : encapsulation', 'Comprendre l\'encapsulation (privé/public, getter/setter).', 'Pcipxfq3IVw'),
+(127, 13, '2017-11-10 14:38:42', 'Bases de la programmation n°69 - POO : vie d\'un objet (constructeur)', 'Comprendre la vie d\'un objet (déclaration, création, utilisation).', 'rTbctFr3zc8'),
+(128, 13, '2017-11-09 16:45:47', 'Bases de la programmation n°68 - POO : classe/objet', 'Initiation à la notion de classe et d\'objet.', '3_1TJBsJm-k'),
+(129, 13, '2017-11-08 10:30:05', 'Bases de la programmation n°67 - événementiel : tables de multiplications', 'Créer une application graphique qui permet de proposer une série de tests.', 'X-BX2TX1YC8'),
+(130, 13, '2017-11-07 09:22:50', 'Bases de la programmation n°66 - événementiel : conversion de monnaies', 'Créer une application graphique qui permet de réaliser des conversions de monnaies.', 'ogqgPiBJ_a4'),
+(131, 13, '2017-11-05 13:44:15', 'Bases de la programmation n°65 - événementiel : manipulation de listes', 'Créer une application graphique qui permet de gérer des listes.', 'jtIFePeDFmc'),
+(132, 13, '2017-11-03 12:36:42', 'Bases de la programmation n°64 - événementiel : poids idéal', 'Créer une application graphique qui permet de calculer le poids idéal.', 'tAUkirXVbk4'),
+(133, 13, '2017-11-02 12:00:37', 'Bases de la programmation n°63 - événementiel : galerie de photos', 'Créer une application graphique qui permet de sélectionner un dossier et d\'afficher les images.', 'ZZOcCU-Q6V8'),
+(134, 13, '2017-11-01 15:54:34', 'Bases de la programmation n°62 - événementiel : conversions', 'Créer une application graphique qui permet de convertir en base 2.', 'SUDWQ9z0GAc'),
+(135, 13, '2017-10-31 16:11:14', 'Bases de la programmation n°61 - événementiel : nombre caché', 'Créer une application graphique avec des propriétés et des modules non événementiels.', 'MCNNpJWPTGk'),
+(136, 13, '2017-10-30 16:44:06', 'Bases de la programmation n°60 - événementiel : premier exemple graphique', 'Découverte de la programmation dans un environnement graphique.', 'R71Vj5PSOK8'),
+(137, 13, '2017-10-28 13:02:08', 'Bases de la programmation n°59 - modules : exercice 55 (notation polonaise)', 'Exercice de réflexion sur le calcul en notation polonaise.', 'htV8q12Hn58'),
+(138, 13, '2017-10-27 10:01:31', 'Bases de la programmation n°58 - modules : exercice 54 (signes du zodiaque)', 'Création d\'un module qui retourne le signe du zodiaque.', 'vQJeeD-M5xE'),
+(139, 13, '2017-10-26 09:10:11', 'Bases de la programmation n°57 - modules : exercice 53 (paramètre vecteur)', 'Création d\'un module ayant un vecteur en paramètre et modification du vecteur.', '6WArwj8toQ0'),
+(140, 13, '2017-10-25 08:44:07', 'Bases de la programmation n°56 - modules : exercice 52 (paramètre vecteur)', 'Création d\'un module ayant un vecteur en paramètre.', 'Z_2KgfgHsow'),
+(141, 13, '2017-10-25 08:36:13', 'Bases de la programmation n°55 - modules : QCM', 'Petit QCM pour contrôler les connaissances.', 'pgSobCGHtPw'),
+(142, 13, '2017-10-24 09:31:22', 'Bases de la programmation n°54 - modules : procédure ou fonction ?', 'Savoir choisir entre créer une procédure ou une fonction.', 'C13X9KenLmY'),
+(143, 13, '2017-10-24 09:26:35', 'Bases de la programmation n°53 - modules : procédure ou fonction ?', 'Savoir choisir entre créer une procédure ou une fonction.', 'lr4jrRzjrQA'),
+(144, 13, '2017-10-23 10:33:31', 'Bases de la programmation n°52 - modules : trace avec paramètres par référence', 'Trace complexe avec paramètres en référence.', 'bGet3MFefL4'),
+(145, 13, '2017-10-23 10:29:31', 'Bases de la programmation n°51 - modules : trace avec paramètres par référence', 'Découverte des différents passages de paramètres.', '4FYzigwAF3M'),
+(146, 13, '2017-10-23 10:23:40', 'Bases de la programmation n°50 - modules : exercice 46 (fonctions paramétrées)', 'Contrôle si 2 nombres sont amis.', 'JtRZP_-wYEI'),
+(147, 13, '2017-10-21 15:22:17', 'Bases de la programmation n°49 - modules : exercice 45', 'Réutiliser une fonction paramétrée.', 'DQkIdlu5bFw'),
+(148, 13, '2017-10-21 15:18:52', 'Bases de la programmation n°48 - modules : exercice 44', 'Transformer une fonction non paramétrée en fonction paramétrée.', 'FdLkvKiglk4'),
+(149, 13, '2017-10-20 09:13:37', 'Bases de la programmation n°47 - modules : exemple avec paramètres', 'Ajouter des paramètres à un module.', 'zs4aVyJKDbk'),
+(150, 13, '2017-10-20 08:38:03', 'Bases de la programmation n°46 - modules : exercice 43 (fonction)', 'Transformer une procédure en fonction.', 'oIYr7zFbeg0'),
+(151, 13, '2017-10-19 14:53:29', 'Bases de la programmation n°45 - modules : exemple fonction', 'Découvrir le principe d\'une fonction.', 'fEuWc3vSFBc'),
+(152, 13, '2017-10-19 14:02:25', 'Bases de la programmation n°44 - modules : exercice 42', 'Application directe de la notion vue dans la vidéo précédente.', 'da2zwV1-eLk'),
+(153, 13, '2017-10-18 12:59:54', 'Bases de la programmation n°43 - modules : premier exemple', 'Montrer l\'intérêt d\'un module.', 'xPXok2jW0Xw'),
+(154, 13, '2017-10-16 13:58:46', 'Bases de la programmation n°42 - tableaux : exercice41 (exercice avancé)', 'Trouver la solution la plus optimisée d\'un problème sur les tableaux.', 'x8rD8tC5aoQ'),
+(155, 13, '2017-10-16 09:11:04', 'Bases de la programmation n°41 - tableaux : exercice40 (exercice avancé)', 'Trouver la solution la plus optimisée d\'un problème sur les tableaux.', '6Ev3SC4nUzU'),
+(156, 13, '2017-10-15 16:12:22', 'Bases de la programmation n°40 - tableaux : exercice39 (inversion d\'un tableau)', 'Inversion des cases d\'un tableau sans utiliser un autre tableau.', '9132Kbg99AU'),
+(157, 13, '2017-10-15 14:11:07', 'Bases de la programmation n°39 - tableaux : exercice38 (trace d\'un tableau)', 'Bien comprendre le fonctionnement d\'un tableau.', 'xmiMaEqkoMg'),
+(158, 13, '2017-10-14 09:53:19', 'Bases de la programmation n°38 - tableaux : exercice37 (recherche dichotomique)', 'Recherche dichotomique dans un vecteur trié.', 'ob6bo7BI_Uw'),
+(159, 13, '2017-10-14 09:33:13', 'Bases de la programmation n°37 - tableaux : exercice36 (recherche séquentielle)', 'Recherche séquentielle dans un vecteur.', '4gxhfP4I5pM'),
+(160, 13, '2017-10-13 13:08:55', 'Bases de la programmation n°36 - tableaux : exercice35 (tri par bulle)', 'Tri d\'un vecteur avec la méthode de tri par bulle.', 'kUP8kb9t50Q'),
+(161, 13, '2017-10-12 17:04:43', 'Bases de la programmation n°35 - tableaux : exercice34 (tri par insertion)', 'Tri d\'un vecteur avec la méthode de tri par insertion.', 'dSN7mtGOeZc'),
+(162, 13, '2017-10-12 11:05:11', 'Bases de la programmation n°34 - tableaux : exercice33 (tri par sélection)', 'Tri d\'un vecteur avec la méthode de tri par sélection.', '0Z8rYUjFrG4'),
+(163, 13, '2017-10-11 09:59:01', 'Bases de la programmation n°33 - tableaux : exercice32 (tableau de structure)', 'Manipulation d\'un tableau de structure.', 'H9oJxdw8SN4'),
+(164, 13, '2017-10-10 09:49:19', 'Bases de la programmation n°32 - tableaux : exercice31 (matrice)', 'Manipulation d\'un tableau à 2 dimensions.', 'n6mbI-4Vbvg'),
+(165, 13, '2017-10-10 09:10:26', 'Bases de la programmation n°31 - tableaux : exercice29 (manipulation d\'un vecteur)', 'Manipulation d\'un tableau à 1 dimension.', 'fgSYas-xIiI'),
+(166, 13, '2017-10-09 10:09:35', 'Bases de la programmation n°30 - procédural : debugage', 'Utilisation du debugage pour voir l\'évolution des variables.', 'q0vQd-icoCA'),
+(167, 13, '2017-10-09 09:46:58', 'Bases de la programmation n°29 - procédural : exercice28 (conversion binaire)', 'Exercice de révision (conversion d\'un nombre entier en binaire).', '6D2tOQwj0vI'),
+(168, 13, '2017-10-08 16:07:15', 'Bases de la programmation n°28 - procédural : exercice27 (nombre premier)', 'Exercice de révision (contrôle si un nombre est premier).', 'kAKLBGNPbKE'),
+(169, 13, '2017-10-08 16:01:18', 'Bases de la programmation n°27 - procédural : exercice26 (conversion secondes)', 'Exercice de révision (conversion de secondes en HH:MM:SS).', 'WCWnS78WRTE'),
+(170, 13, '2017-10-07 16:15:58', 'Bases de la programmation n°26 - procédural : exercice25 (suite croissante)', 'Exercice de révision (nécessité de comparer 2 valeurs successives).', 'qhCM3u080ek'),
+(171, 13, '2017-10-07 15:22:10', 'Bases de la programmation n°25 - procédural : exercice24 (recherche de min et max)', 'Exercice de révision (recherche de minimum et maximum dans une liste non bornée).', 'JfDD5bi3mjk'),
+(172, 13, '2017-10-06 10:01:11', 'Bases de la programmation n°24 - procédural : exercice23 (recherche de min et max)', 'Exercice de révision (recherche de minimum et maximum dans une liste bornée).', 'F6u-yv4WIYc'),
+(173, 13, '2017-10-06 09:36:47', 'Bases de la programmation n°23 - procédural : exercice22 (for et petite astuce)', 'Exercice de révision (boucle for et optimisation de traitement).', '16ObvAcBAJg'),
+(174, 13, '2017-10-05 13:37:31', 'Bases de la programmation n°22 - procédural : exercice21 (if,switch et test de saisie)', 'Exercice de révision (alternative et test de saisie).', 'vrrMgyPRAWU'),
+(175, 13, '2017-10-05 08:52:01', 'Bases de la programmation n°21 - procédural : exercice20 (saisie affichage)', 'Exercice de révision (saisie et affichage).', 'spqHCVdSTtQ'),
+(176, 13, '2017-10-04 08:42:42', 'Bases de la programmation n°20 - procédural : exercice19 (optimisation)', 'Apprendre à optimiser un code.', 'h_95SLUnV6o'),
+(177, 13, '2017-10-03 08:45:01', 'Bases de la programmation n°19 - procédural : exercice18 (fonction dans une fonction)', 'Appel d\'une fonction comme argument d\'une autre fonction.', 'kwYLJGVKGNA'),
+(178, 13, '2017-10-03 08:38:25', 'Bases de la programmation n°18 - procédural : exercice17 (fonction mathématique)', 'Découvrir des fonctions mathématiques directement sur la classe Math.', 'OhSdUl7C5eU'),
+(179, 13, '2017-10-02 08:06:55', 'Bases de la programmation n°17 - procédural : exercice16 (manipulations de chaines)', 'Découvrir des fonctions de manipulations de chaines (IndexOf, Substring).', 'iuh-7-qxFHw'),
+(180, 13, '2017-10-02 08:02:00', 'Bases de la programmation n°16 - procédural : exercice15 (manipulations de chaines)', 'Découvrir des fonctions de manipulations de chaines (Replace).', 'xPto2Junk1o'),
+(181, 13, '2017-09-30 15:48:53', 'Bases de la programmation n°15 - procédural : exercice14 (boucles imbriquées)', 'Boucles imbriquées.', 'mrwTtcVtR90'),
+(182, 13, '2017-09-30 15:35:36', 'Bases de la programmation n°14 - procédural : exercice13 (boucles successives)', 'Plusieurs boucles successives.', 'VYC6mG6ILB0'),
+(183, 13, '2017-09-29 09:22:00', 'Bases de la programmation n°13 - procédural : exercice12 (boucle for)', 'Utiliser la boucle for (nombre d\'itération connu).', 'AxLkmF0aPwM'),
+(184, 13, '2017-09-29 09:18:33', 'Bases de la programmation n°12 - procédural : exercice11 (boucle for)', 'Utiliser la boucle for (nombre d\'itération connu).', '7tss6XwFO8I'),
+(185, 13, '2017-09-28 09:00:30', 'Bases de la programmation n°11 - procédural : exercice10 (boucle do/while)', 'Utiliser la boucle do/while pour les test de saisie.', 'INE6HvHBRG0'),
+(186, 13, '2017-09-28 08:37:47', 'Bases de la programmation n°10 - procédural : exercice9 (boucle do/while)', 'Utiliser la boucle do/while pour les test de saisie.', 'QDo1e7-OxWU'),
+(187, 13, '2017-09-27 07:50:29', 'Bases de la programmation n°9 - procédural : exercice8 (boucle while)', 'Utiliser la boucle universelle while avec question pour arrêter.', 'Pb1esUzrkIA'),
+(188, 13, '2017-09-27 07:44:20', 'Bases de la programmation n°8 - procédural : exercice7 (boucle while)', 'Utiliser la boucle universelle while.', 'XkLPXXSNTqM'),
+(189, 13, '2017-09-26 09:30:45', 'Bases de la programmation n°7 - procédural : exercice6 (conditions imbriquées)', 'Conditions imbriquées.', 'km6yGYNE7U4'),
+(190, 13, '2017-09-26 09:19:10', 'Bases de la programmation n°6 - procédural : exercice5 (condition)', 'Condition (alternative avec if).', 'L9ePj3vr8YM'),
+(191, 13, '2017-09-25 15:48:28', 'Bases de la programmation n°5 - procédural : exercice4 (calcul dans affichage)', 'Calcul dans un affichage.', 'ZE0W7HZpStA'),
+(192, 13, '2017-09-25 15:30:46', 'Bases de la programmation n°4 - procédural : exercice3 (calculs)', 'Découverte du type float et des calculs.', 'wWI4Y8RzJXA'),
+(193, 13, '2017-09-21 16:03:30', 'Bases de la programmation n°3 - procédural : exercice2 (saisie)', 'Saisie.', 'URwYM1jToig'),
+(194, 13, '2017-09-21 14:41:21', 'Bases de la programmation n°2 - procédural : exercice1 (affichage)', 'Initialisation et affichage avec concaténation.', 'w9Vc63-bWhY'),
+(196, 13, '2017-09-20 17:35:03', 'Bases de la programmation n°1 - procédural : premier exemple', 'Découvrir un tout premier exemple de programme en procédural.', 'iXkPQpzTWO4'),
+(197, 14, '2017-05-02 10:17:11', 'Exercice triggers, sql et correctifs (correction sql sujet EDC cas aeroplan 2014 BTS SIO)', 'Présenter comment traiter les parties triggers, sql et correctifs d\'un sujet de BTS SIO.', 'MY3iht6rexA'),
+(198, 14, '2017-05-01 15:53:25', 'Exercice triggers, sql et correctifs (correction sql sujet EDC cas supmaster 2014 BTS SIO)', 'Présenter comment traiter les parties triggers, sql et correctifs d\'un sujet de BTS SIO.', '6H4Df5w39OM'),
+(199, 14, '2017-05-01 15:16:00', 'Exercice triggers, sql et correctifs (correction sql sujet EDC cas music 2015 BTS SIO)', 'Présenter comment traiter les parties triggers, sql et correctifs d\'un sujet de BTS SIO.', '8Zso-kf0iFM'),
+(200, 14, '2017-05-01 09:54:44', 'Exercice triggers, sql et correctifs (correction sql sujet EDC cas demguiv 2016 BTS SIO)', 'Présenter comment traiter les parties triggers, sql et correctifs d\'un sujet de BTS SIO.', 'fyHIL-Vxgjo'),
+(201, 15, '2017-04-29 17:28:57', 'Exercice Objet (correction objet sujet EDC cas gest-pc 2013 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'JauXs6Noh4s'),
+(202, 15, '2017-04-29 16:54:57', 'Exercice Objet (correction objet sujet EDC cas equida 2013 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'Pz5-IAoSRRU'),
+(203, 15, '2017-04-28 15:35:46', 'Exercice Objet (correction objet sujet EDC cas aeroplan 2014 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'Rv61mr0_Wx4'),
+(204, 15, '2017-04-28 13:38:46', 'Exercice Objet (correction objet sujet EDC cas supmaster 2014 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'Z4aXK-g_bA8'),
+(205, 15, '2017-04-28 10:20:56', 'Exercice Objet (correction objet sujet EDC cas music 2015 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'NCwfDrWLpSM'),
+(206, 15, '2017-04-27 15:18:59', 'Exercice Objet (correction objet sujet EDC cas trisel 2015 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', '8g2ih2jtYVQ'),
+(207, 15, '2017-04-27 11:43:53', 'Exercice Objet (correction objet sujet EDC cas ffbsq 2016 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'uMrdWszfBLE'),
+(208, 15, '2017-04-27 09:20:47', 'Exercice Objet (correction objet sujet EDC cas demguiv 2016 BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.', 'jgVEK4mu4DA'),
+(209, 16, '2017-04-26 12:50:53', 'Exercice MCD (correction MCD sujet EDC cas aeroplan 2014 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'RbqgBP1g6Qc'),
+(210, 16, '2017-04-26 11:45:11', 'Exercice MCD (correction MCD sujet EDC cas trisel 2015 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'QUL-nsgSiDg'),
+(211, 16, '2017-04-26 09:04:39', 'Exercice MCD (correction MCD sujet EDC cas demguiv 2016 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'boS-Tr_SyTQ'),
+(212, 16, '2017-04-25 16:13:37', 'Exercice MCD (correction MCD sujet EDC cas Gest-pc2013 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'P2kngg6zRZo'),
+(213, 16, '2017-04-25 13:44:42', 'Exercice MCD (correction MCD sujet EDC cas Equida 2013 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'Uzk3M7OLs5s'),
+(214, 16, '2017-04-25 09:52:03', 'Exercice MCD (correction MCD sujet EDC cas Submaster 2014 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'v1dKMDAH2r4'),
+(215, 16, '2017-04-25 07:45:42', 'Exercice MCD (correction MCD sujet EDC cas FFBSQ 2016 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'dUAw4XztT6w'),
+(216, 16, '2017-04-25 07:32:53', 'Exercice MCD (correction MCD sujet EDC cas Music 2015 BTS SIO)', 'Présenter comment traiter la partie conception de données d\'un sujet de BTS SIO.', 'nNkZU9DuhJI'),
+(217, 17, '2017-03-01 21:12:06', 'Cours Composant logiciel (11 à 14 / 14) : web service', 'Présenter la notion de composant logiciel et le web service.', 'fNG2htDCjkM'),
+(218, 17, '2017-03-01 21:07:16', 'Cours Composant logiciel (1 à 10 / 14) : notion de composant logiciel', 'Présenter la notion de composant logiciel et le web service.', 'qpQ1tVIQSck'),
+(219, 18, '2016-11-29 13:37:01', 'Cours MCD MLD MPD (10 à 19 / 19) : exercices', 'Montrer comment passer du MCD au MLD puis MPD pour créer la base de données.', 'lDowNcaRJ9I'),
+(220, 18, '2016-11-29 13:29:22', 'Cours MCD MLD MPD (1 à 9 / 19) : introduction, entités, associations, héritage, contraintes', 'Montrer comment passer du MCD au MLD puis MPD pour créer la base de données.', 'NZIi6b72NBk'),
+(221, 19, '2016-11-29 13:18:46', 'Cours MCD vs Diagramme de classes (12 à 20 / 20) : héritage, contraintes, exercices', 'Montrer comment passer du MCD au Diagramme de classes.', '3fZo3FYVGA4'),
+(222, 19, '2016-11-29 13:11:53', 'Cours MCD vs Diagramme de classes (1 à 11 / 20) : introduction, entités, associations', 'Montrer comment passer du MCD au Diagramme de classes.', 'LxpWExZwKQs'),
+(223, 20, '2016-11-02 15:46:24', 'Cours Transactions et verrous (14 à 17 / 17) : risques sur les verrous et cas d\'utilisation', 'Présentation des transactions sql et de leur niveau d\'isolement.', '4yW0fTIQW6k'),
+(224, 20, '2016-11-02 15:42:03', 'Cours Transactions et verrous (7 à 13 / 17) : verrous et problèmes d\'accès', 'Présentation des transactions sql et de leur niveau d\'isolement.', 'o7Yjg8Ct4Bs'),
+(225, 20, '2016-11-02 15:34:02', 'Cours Transactions et verrous (1 à 6 / 17) : transactions', 'Présentation des transactions sql et de leur niveau d\'isolement.', 'A6tY7ZqiyVw'),
+(226, 21, '2016-10-31 14:26:37', 'Cours Curseurs(5 à 8 / 8) : curseur historique et curseur dans le SGBDR', 'Présentation des 3 catégories de curseurs.', '4H2GMEwqCjA'),
+(227, 21, '2016-10-31 14:11:01', 'Cours Curseurs(1 à 4 / 8) : introduction et curseur objet', 'Présentation des 3 catégories de curseurs.', 'Y09HkNAQTKw'),
+(228, 23, '2016-10-29 13:23:14', 'Cours Triggers (26 à 32 / 32) : procédures et fonctions stockées', 'Introduction aux triggers et procédures stockées.', '9WgLpEa8U-0'),
+(229, 23, '2016-10-29 13:18:58', 'Cours Triggers (21 à 25 / 32) : inclusion multiple et autres exemples de triggers', 'Introduction aux triggers et procédures stockées.', 'UHV1x3MO6yQ'),
+(230, 23, '2016-10-29 13:12:59', 'Cours Triggers (15 à 20 / 32) : syntaxe du langage', 'Introduction aux triggers et procédures stockées.', 'FKmNkR--SAI'),
+(231, 23, '2016-10-29 13:09:47', 'Cours Triggers (10 à 14 / 32) : exemple trigger sur inclusion', 'Introduction aux triggers et procédures stockées.', '1y6rUzV-tVs'),
+(232, 23, '2016-10-29 13:06:10', 'Cours Triggers (5 à 9 / 32) : exemple trigger sur exclusion', 'Introduction aux triggers et procédures stockées.', 'im5gkHcQ5Qw'),
+(233, 23, '2016-10-29 13:00:46', 'Cours Triggers (1 à 4 / 32) : introduction', 'Introduction aux triggers et procédures stockées.', 'uDAhSKJW2ic'),
+(234, 22, '2016-10-27 14:03:44', 'Cours Informatique embarquée', 'Présentation sur l\'informatique embarquée.', 'qX3LPE9yB_I'),
+(235, 24, '2016-09-25 10:18:29', 'Cours UML (25 à 33 / 33) : exercices', 'Notions globales du langage de modélisation UML.', 'YlcRl07eHXk'),
+(236, 24, '2016-09-25 10:14:03', 'Cours UML (19 à 24 / 33) : autres diagrammes', 'Notions globales du langage de modélisation UML.', '8g31nOjPNEM'),
+(237, 24, '2016-09-25 10:10:06', 'Cours UML (16 à 18 / 33) : diagramme de séquences', 'Notions globales du langage de modélisation UML.', 'OL2Ks4jeUZ0'),
+(238, 24, '2016-09-25 10:07:00', 'Cours UML (12 à 15 / 33) : diagramme d\'états', 'Notions globales du langage de modélisation UML.', 'L1x4sLVR7CI'),
+(239, 24, '2016-09-25 10:03:58', 'Cours UML (8 à 11 / 33) : diagramme de classes', 'Notions globales du langage de modélisation UML.', '8PmTJIrlS5w'),
+(240, 24, '2016-09-25 09:59:04', 'Cours UML (1 à 7 / 33) : introduction et cas d\'utilisation', 'Notions globales du langage de modélisation UML.', 'dJd6azZr9Kg');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formation_categorie`
+--
+
+DROP TABLE IF EXISTS `formation_categorie`;
+CREATE TABLE IF NOT EXISTS `formation_categorie` (
+  `formation_id` int NOT NULL,
+  `categorie_id` int NOT NULL,
+  PRIMARY KEY (`formation_id`,`categorie_id`),
+  KEY `IDX_830086E95200282E` (`formation_id`),
+  KEY `IDX_830086E9BCF5E72D` (`categorie_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `formation_categorie`
+--
+
+INSERT INTO `formation_categorie` (`formation_id`, `categorie_id`) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(7, 2),
+(8, 1),
+(9, 2),
+(10, 2),
+(12, 2),
+(13, 2),
+(14, 3),
+(15, 3),
+(16, 3),
+(17, 3),
+(18, 3),
+(18, 7),
+(19, 3),
+(19, 7),
+(20, 3),
+(21, 3),
+(21, 7),
+(22, 3),
+(22, 7),
+(23, 3),
+(24, 3),
+(24, 7),
+(25, 4),
+(26, 4),
+(27, 4),
+(28, 4),
+(29, 4),
+(29, 7),
+(30, 4),
+(31, 4),
+(31, 7),
+(32, 4),
+(33, 4),
+(34, 4),
+(35, 4),
+(36, 4),
+(37, 4),
+(38, 4),
+(39, 4),
+(40, 4),
+(41, 4),
+(42, 4),
+(43, 4),
+(44, 6),
+(45, 6),
+(47, 6),
+(47, 8),
+(48, 7),
+(51, 7),
+(52, 8),
+(54, 7),
+(55, 8),
+(57, 5),
+(58, 5),
+(59, 5),
+(60, 5),
+(61, 5),
+(62, 5),
+(63, 5),
+(64, 5),
+(65, 5),
+(66, 5),
+(67, 5),
+(68, 5),
+(69, 5),
+(70, 5),
+(71, 5),
+(72, 5),
+(73, 5),
+(74, 5),
+(75, 6),
+(76, 5),
+(76, 9),
+(77, 7),
+(77, 9),
+(78, 5),
+(78, 9),
+(79, 6),
+(80, 6),
+(81, 6),
+(82, 6),
+(83, 6),
+(84, 6),
+(85, 6),
+(86, 6),
+(88, 6),
+(89, 6),
+(98, 6),
+(99, 6),
+(100, 6),
+(101, 6),
+(102, 6),
+(103, 6),
+(104, 6),
+(104, 8),
+(105, 6),
+(105, 8),
+(106, 6),
+(106, 8),
+(107, 6),
+(107, 8),
+(108, 6),
+(108, 8),
+(109, 6),
+(110, 6),
+(111, 1),
+(111, 6),
+(112, 6),
+(113, 6),
+(114, 6),
+(115, 6),
+(116, 1),
+(116, 7),
+(117, 1),
+(117, 7),
+(118, 1),
+(118, 7),
+(119, 1),
+(119, 7),
+(120, 1),
+(120, 7),
+(121, 1),
+(121, 7),
+(122, 3),
+(122, 7),
+(123, 3),
+(123, 7),
+(124, 3),
+(124, 7),
+(125, 3),
+(125, 7),
+(126, 3),
+(126, 7),
+(127, 3),
+(127, 7),
+(128, 3),
+(128, 7),
+(129, 3),
+(130, 3),
+(131, 3),
+(132, 3),
+(133, 3),
+(134, 3),
+(135, 3),
+(136, 3),
+(137, 3),
+(138, 3),
+(139, 3),
+(140, 3),
+(141, 3),
+(142, 3),
+(143, 3),
+(144, 3),
+(145, 3),
+(146, 3),
+(147, 3),
+(148, 3),
+(149, 3),
+(150, 3),
+(151, 3),
+(152, 3),
+(153, 3),
+(154, 3),
+(155, 3),
+(156, 3),
+(157, 3),
+(158, 3),
+(159, 3),
+(160, 3),
+(161, 3),
+(162, 3),
+(163, 3),
+(164, 3),
+(165, 3),
+(166, 3),
+(167, 3),
+(168, 3),
+(169, 3),
+(170, 3),
+(171, 3),
+(172, 3),
+(173, 3),
+(174, 3),
+(175, 3),
+(176, 3),
+(177, 3),
+(178, 3),
+(179, 3),
+(180, 3),
+(181, 3),
+(182, 3),
+(183, 3),
+(184, 3),
+(185, 3),
+(186, 3),
+(187, 3),
+(188, 3),
+(189, 3),
+(190, 3),
+(191, 3),
+(192, 3),
+(193, 3),
+(194, 3),
+(196, 3),
+(197, 8),
+(198, 8),
+(199, 8),
+(200, 8),
+(201, 7),
+(202, 7),
+(203, 7),
+(204, 7),
+(205, 7),
+(206, 7),
+(207, 7),
+(208, 7),
+(209, 5),
+(210, 5),
+(211, 5),
+(212, 5),
+(213, 5),
+(214, 5),
+(215, 5),
+(216, 5),
+(217, 9),
+(218, 9),
+(219, 5),
+(219, 9),
+(220, 5),
+(220, 9),
+(221, 5),
+(221, 9),
+(222, 5),
+(222, 9),
+(223, 8),
+(223, 9),
+(224, 8),
+(224, 9),
+(225, 8),
+(225, 9),
+(226, 8),
+(226, 9),
+(227, 7),
+(227, 8),
+(227, 9),
+(228, 8),
+(228, 9),
+(229, 8),
+(229, 9),
+(230, 8),
+(230, 9),
+(231, 8),
+(231, 9),
+(232, 8),
+(232, 9),
+(233, 8),
+(233, 9),
+(234, 9),
+(235, 2),
+(235, 9),
+(236, 2),
+(236, 9),
+(237, 2),
+(237, 9),
+(238, 2),
+(238, 9),
+(239, 2),
+(239, 9),
+(240, 2),
+(240, 9);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `messenger_messages`
+--
+
+DROP TABLE IF EXISTS `messenger_messages`;
+CREATE TABLE IF NOT EXISTS `messenger_messages` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `headers` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue_name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)',
+  PRIMARY KEY (`id`),
+  KEY `IDX_75EA56E0FB7336F0` (`queue_name`),
+  KEY `IDX_75EA56E0E3BD61CE` (`available_at`),
+  KEY `IDX_75EA56E016BA31DB` (`delivered_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `playlist`
+--
+
+DROP TABLE IF EXISTS `playlist`;
+CREATE TABLE IF NOT EXISTS `playlist` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `playlist`
+--
+
+INSERT INTO `playlist` (`id`, `name`, `description`) VALUES
+(1, 'Eclipse et Java', 'Utilisation de l\'IDE Eclipse et développement en Java.'),
+(2, 'Visual Studio 2019 et C#', 'Plusieurs vidéos portant sur différents aspects de Visual Studio.'),
+(3, 'Programmation sous Python', 'Exercices progressifs pour apprendre à programmer sous Python.'),
+(4, 'Sujet E5 SLAM 2019 métropole : cas RESTILOC', 'Correction commentée des 4 missions (1 vidéo par mission)'),
+(5, 'Sujet E5 SLAM 2018 Nouméa : cas LOCALUX', 'Correction commentée des 3 missions (1 vidéo par mission)'),
+(6, 'Sujet E5 SLAM 2018 métropole : cas WEBCAISSE', 'Correction commentée des 4 missions (1 vidéo par mission)'),
+(7, 'MCD : exercices progressifs', 'Exercices progressifs pour apprendre à construire un MCD.'),
+(8, 'Compléments Android (programmation mobile)', 'Chaque vidéo est indépendante et présente une notion spécifique.'),
+(9, 'Sujet E5 SLAM 2017 Nouméa: cas DANE', 'Correction commentée des 4 missions (1 vidéo par mission).'),
+(10, 'Sujet E5 SLAM 2017 métropole : cas AHM-23', 'Correction commentée des 4 missions (1 vidéo par mission).'),
+(11, 'TP Android (programmation mobile)', 'Réaliser une application Android complète (8h12mn).'),
+(12, 'POO TP Java', 'Créer étape par étape un TP en Java sous Eclipse, pour mettre en pratique les connaissances en programmation objet.'),
+(13, 'Bases de la programmation (C#)', 'Exemples progressifs de programmes en procédural, événementiel et objet sous Visual Studio.'),
+(14, 'Exercices triggers, sql et correctifs (sujets EDC BTS SIO)', 'Présenter comment traiter les parties triggers, sql et correctifs d\'un sujet de BTS SIO.'),
+(15, 'Exercices objet (sujets EDC BTS SIO)', 'Présenter comment traiter la partie objet d\'un sujet de BTS SIO.'),
+(16, 'MCD exercices d\'examen (sujets EDC BTS SIO)', 'Présenter comment traiter la partie conception de données de sujets de BTS SIO.'),
+(17, 'Cours Composant logiciel', 'Cours Composant logiciel (26mn).'),
+(18, 'Cours MCD MLD MPD', 'Cours MCD MLD MPD (28mn).'),
+(19, 'Cours MCD vs Diagramme de classes', 'Cours MCD vs Diagramme de classes (26mn).'),
+(20, 'Cours Transactions et verrou', 'Cours Transactions et verrous (32mn).'),
+(21, 'Cours Curseurs', 'Cours Curseurs (25mn).'),
+(22, 'Cours Informatique embarquée', 'Présentation rapide de l\'informatique embarquée (14mn24).'),
+(23, 'Cours Triggers', 'Cours Triggers et procédures stockées (57mn).'),
+(24, 'Cours UML', 'Cours UML (57mn).'),
+(25, 'Cours Merise/2', 'Présentation des extensions de Merise au niveau du MCD.'),
+(26, 'Cours Modèle relationnel et MCD', 'Présentation des règles du Modèle Relationnel.'),
+(27, 'Cours de programmation objet', 'Présentation des notions fondamentales de la programmation objet.'),
+(28, 'playlist test', 'description playlist test');
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `formation`
+--
+ALTER TABLE `formation`
+  ADD CONSTRAINT `FK_404021BF6BBD148` FOREIGN KEY (`playlist_id`) REFERENCES `playlist` (`id`);
+
+--
+-- Contraintes pour la table `formation_categorie`
+--
+ALTER TABLE `formation_categorie`
+  ADD CONSTRAINT `FK_830086E95200282E` FOREIGN KEY (`formation_id`) REFERENCES `formation` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_830086E9BCF5E72D` FOREIGN KEY (`categorie_id`) REFERENCES `categorie` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
