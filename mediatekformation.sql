@@ -7,7 +7,6 @@ WORKDIR /app
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Variable fictive pour que Symfony ne plante pas pendant le build
 ENV DATABASE_URL="mysql://fake:fake@localhost:3306/fake"
 ENV APP_ENV=prod
 
