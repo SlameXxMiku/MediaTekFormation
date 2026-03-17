@@ -22,4 +22,4 @@ RUN chmod -R 777 /app/var
 
 RUN printf '{\n\tauto_https off\n\tadmin off\n}\n:{$PORT} {\n\troot * /app/public\n\tphp_server\n}\n' > /etc/caddy/Caddyfile
 
-CMD php bin/console security:hash-password admin --env=prod 2>&1; sleep 3600
+CMD php bin/console doctrine:proxy:generate-proxies --env=prod 2>/dev/null; php bin/console cache:warmup --env=prod 2>/dev/null; frankenphp run --config /etc/caddy/Caddyfile
