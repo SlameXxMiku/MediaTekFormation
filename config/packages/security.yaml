@@ -21,6 +21,7 @@ security:
                 # app_login est le nom de la route défini dans le contrôleur
                 login_path: app_login
                 check_path: app_login
+                default_target_path: /admin
                 enable_csrf: true
             logout:
                 path: logout
