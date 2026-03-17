@@ -22,4 +22,4 @@ RUN chmod -R 777 /app/var
 
 RUN printf '{\n\tauto_https off\n\tadmin off\n}\n:{$PORT} {\n\troot * /app/public\n\tphp_server\n}\n' > /etc/caddy/Caddyfile
 
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD php bin/console doctrine:schema:update --force --no-interaction 2>/dev/null; frankenphp run --config /etc/caddy/Caddyfile
